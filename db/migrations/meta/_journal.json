@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1707105614179,
+      "tag": "0000_spicy_squadron_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1707109971595,
+      "tag": "0001_violet_sister_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1707110975445,
+      "tag": "0002_hot_talon",
+      "breakpoints": true
+    }
+  ]
+}
