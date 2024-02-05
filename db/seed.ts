@@ -1,8 +1,10 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { db, client } from "./";
-import { users } from "./schema";
+import { locations, profiles, NewLocation } from "./schema";
 import * as dotenv from "dotenv";
 import { eq } from "drizzle-orm";
+
+import neighborhoods from "./data/neighborhoods.json";
 
 dotenv.config({ path: "./.env.local" });
 
@@ -10,25 +12,28 @@ if (!("DATABASE_URL" in process.env)) {
   throw new Error("DATABASE_URL not found on .env.development");
 }
 
+// TODO: Need to create a user and then use that users id in the created_at's
+
 await (async function () {
   console.log("Seed start");
 
   const user = await db
     .select()
-    .from(users)
-    .where(eq(users.email, "alanhoskins@gmail.com"));
+    .from(profiles)
+    .where(eq(profiles.email, "alanhoskins@gmail.com"))
+    .limit(1);
 
-  console.log("user", user);
+  const existingNeighborhoods = await db.select().from(locations);
+  console.log("existingNeighborhoods", existingNeighborhoods);
 
-  if (user.length === 0) {
-    console.log("Seeding users");
-    await db.insert(users).values({
-      authId: "7341fdc0-067b-4662-97c0-4c6cb0fb453d",
-      firstName: "Alan",
-      lastName: "Hoskins",
-      email: "alanhoskins@gmail.com",
-      createdBy: "7341fdc0-067b-4662-97c0-4c6cb0fb453d",
-    });
+  if (existingNeighborhoods.length === 0) {
+    console.log("Seeding locations");
+    const data: NewLocation[] = neighborhoods.map((neighborhood) => ({
+      ...neighborhood,
+      createdBy: user[0].userId,
+    }));
+
+    await db.insert(locations).values(data);
   }
 
   console.log("Seed end");
